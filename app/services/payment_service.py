@@ -87,7 +87,8 @@ class PaymentService:
         assert booking is not None
         now = datetime.now(UTC)
 
-        if success and as_utc(booking.expires_at) > now and booking.status == BookingStatus.PENDING_PAYMENT:
+        is_still_pending = booking.status == BookingStatus.PENDING_PAYMENT
+        if success and as_utc(booking.expires_at) > now and is_still_pending:
             payment.status = PaymentStatus.SUCCESS
             payment.gateway_reference = gateway_reference or f"MOCK-{secrets.token_hex(6)}"
             booking.status = BookingStatus.CONFIRMED
@@ -124,7 +125,9 @@ class PaymentService:
                 "Booking expired before payment confirmation" if success else "Payment declined"
             )
             booking.status = (
-                BookingStatus.EXPIRED if as_utc(booking.expires_at) <= now else BookingStatus.PAYMENT_FAILED
+                BookingStatus.EXPIRED
+                if as_utc(booking.expires_at) <= now
+                else BookingStatus.PAYMENT_FAILED
             )
             self.seat_locks.release_token(db, booking.lock_token)
             self.outbox.add(

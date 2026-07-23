@@ -11,7 +11,6 @@ from app.models.enums import SeatCategory, UserRole
 from app.models.user import User
 from app.services.pricing_service import PricingService
 
-
 Base.metadata.create_all(bind=engine)
 pricing = PricingService()
 

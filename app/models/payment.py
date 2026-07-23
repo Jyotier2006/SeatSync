@@ -21,7 +21,13 @@ class Payment(Base):
     status: Mapped[PaymentStatus] = mapped_column(default=PaymentStatus.PENDING, index=True)
     amount: Mapped[Decimal] = mapped_column(Numeric(10, 2))
     failure_reason: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
+    )
 
     booking = relationship("Booking", back_populates="payments")

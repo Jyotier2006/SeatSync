@@ -19,7 +19,9 @@ class Movie(Base):
     language: Mapped[str] = mapped_column(String(80))
     certificate: Mapped[str] = mapped_column(String(20), default="U/A")
     poster_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC)
+    )
 
     shows = relationship("Show", back_populates="movie")
 

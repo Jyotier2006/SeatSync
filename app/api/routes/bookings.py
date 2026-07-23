@@ -59,6 +59,7 @@ def release_lock(
 ) -> MessageResponse:
     # The token is high entropy; user ownership is still verified by the lock rows.
     from sqlalchemy import select
+
     from app.models.booking import SeatLock
     from app.services.errors import NotFoundError
 

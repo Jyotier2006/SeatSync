@@ -14,11 +14,15 @@ class SeatLock(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     lock_token: Mapped[str] = mapped_column(String(64), index=True)
-    show_seat_id: Mapped[str] = mapped_column(ForeignKey("show_seats.id", ondelete="CASCADE"), index=True)
+    show_seat_id: Mapped[str] = mapped_column(
+        ForeignKey("show_seats.id", ondelete="CASCADE"), index=True
+    )
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
     released_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC)
+    )
 
 
 class Booking(Base):
@@ -32,8 +36,14 @@ class Booking(Base):
     status: Mapped[BookingStatus] = mapped_column(default=BookingStatus.PENDING_PAYMENT, index=True)
     total_amount: Mapped[Decimal] = mapped_column(Numeric(10, 2))
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
+    )
 
     user = relationship("User", back_populates="bookings")
     seats = relationship("BookingSeat", back_populates="booking", cascade="all, delete-orphan")
@@ -44,7 +54,9 @@ class BookingSeat(Base):
     __tablename__ = "booking_seats"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    booking_id: Mapped[str] = mapped_column(ForeignKey("bookings.id", ondelete="CASCADE"), index=True)
+    booking_id: Mapped[str] = mapped_column(
+        ForeignKey("bookings.id", ondelete="CASCADE"), index=True
+    )
     show_seat_id: Mapped[str] = mapped_column(ForeignKey("show_seats.id"), index=True)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
 
